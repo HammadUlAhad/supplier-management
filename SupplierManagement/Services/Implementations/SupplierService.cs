@@ -1,6 +1,7 @@
 using AutoMapper;
 using SupplierManagement.Models.Domain;
 using SupplierManagement.Models.ViewModels;
+using SupplierManagement.Models.Api;
 using SupplierManagement.Repositories.Interfaces;
 using SupplierManagement.Services.Interfaces;
 
@@ -54,6 +55,12 @@ namespace SupplierManagement.Services.Implementations
         public async Task<bool> SupplierExistsAsync(int id)
         {
             return await _supplierRepository.ExistsAsync(id);
+        }
+
+        public async Task<IEnumerable<SupplierApiDto>> GetAllSuppliersWithRatesAsync()
+        {
+            var suppliers = await _supplierRepository.GetAllWithRatesAsync();
+            return _mapper.Map<IEnumerable<SupplierApiDto>>(suppliers);
         }
     }
 }

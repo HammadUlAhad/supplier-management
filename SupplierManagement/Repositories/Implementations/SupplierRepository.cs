@@ -19,6 +19,7 @@ namespace SupplierManagement.Repositories.Implementations
             return await _context.Suppliers
                 .Include(s => s.SupplierRates)
                 .OrderBy(s => s.Name)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -26,6 +27,7 @@ namespace SupplierManagement.Repositories.Implementations
         {
             return await _context.Suppliers
                 .Include(s => s.SupplierRates.OrderBy(sr => sr.RateStartDate))
+                .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.SupplierId == id);
         }
 
@@ -64,6 +66,15 @@ namespace SupplierManagement.Repositories.Implementations
         public async Task<bool> ExistsAsync(int id)
         {
             return await _context.Suppliers.AnyAsync(s => s.SupplierId == id);
+        }
+
+        public async Task<IEnumerable<Supplier>> GetAllWithRatesAsync()
+        {
+            return await _context.Suppliers
+                .Include(s => s.SupplierRates.OrderBy(sr => sr.RateStartDate))
+                .OrderBy(s => s.Name)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

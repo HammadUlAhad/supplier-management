@@ -1,4 +1,5 @@
 using SupplierManagement.Models.ViewModels;
+using SupplierManagement.Models.Api;
 
 namespace SupplierManagement.Services.Interfaces
 {
@@ -10,5 +11,8 @@ namespace SupplierManagement.Services.Interfaces
         Task<SupplierViewModel?> UpdateSupplierAsync(SupplierViewModel supplierViewModel);
         Task<bool> DeleteSupplierAsync(int id);
         Task<bool> SupplierExistsAsync(int id);
+        
+        // API methods for Exercise 2
+        Task<IEnumerable<SupplierApiDto>> GetAllSuppliersWithRatesAsync();
     }
 }

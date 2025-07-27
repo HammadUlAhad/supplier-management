@@ -1,4 +1,5 @@
 using SupplierManagement.Models.ViewModels;
+using SupplierManagement.Models.Api;
 
 namespace SupplierManagement.Services.Interfaces
 {
@@ -12,5 +13,8 @@ namespace SupplierManagement.Services.Interfaces
         Task<bool> DeleteSupplierRateAsync(int id);
         Task<bool> SupplierRateExistsAsync(int id);
         Task<IEnumerable<SupplierViewModel>> GetSuppliersForDropdownAsync();
+        
+        // API methods for Exercise 2
+        Task<IEnumerable<OverlappingRateDto>> GetOverlappingRatesAsync(int? supplierId = null);
     }
 }

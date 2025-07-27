@@ -1,6 +1,7 @@
 using AutoMapper;
 using SupplierManagement.Models.Domain;
 using SupplierManagement.Models.ViewModels;
+using SupplierManagement.Models.Api;
 
 namespace SupplierManagement.Mappings
 {
@@ -21,6 +22,13 @@ namespace SupplierManagement.Mappings
             
             CreateMap<SupplierRateViewModel, SupplierRate>()
                 .ForMember(dest => dest.Supplier, opt => opt.Ignore());
+
+            // API DTO mappings for Exercise 2
+            CreateMap<Supplier, SupplierApiDto>()
+                .ForMember(dest => dest.Rates, opt => opt.MapFrom(src => src.SupplierRates));
+            
+            CreateMap<SupplierRate, SupplierRateApiDto>()
+                .ForMember(dest => dest.SupplierName, opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : string.Empty));
         }
     }
 }

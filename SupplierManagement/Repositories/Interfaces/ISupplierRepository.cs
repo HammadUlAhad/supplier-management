@@ -10,5 +10,8 @@ namespace SupplierManagement.Repositories.Interfaces
         Task<Supplier?> UpdateAsync(Supplier supplier);
         Task<bool> DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
+        
+        // API methods for Exercise 2
+        Task<IEnumerable<Supplier>> GetAllWithRatesAsync();
     }
 }
