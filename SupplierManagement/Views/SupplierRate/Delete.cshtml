@@ -1,0 +1,94 @@
+@model SupplierManagement.Models.ViewModels.SupplierRateViewModel
+
+@{
+    ViewData["Title"] = "Delete Supplier Rate";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="text-danger">Delete Supplier Rate</h1>
+    <a asp-action="Index" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<div class="alert alert-warning" role="alert">
+    <i class="fas fa-exclamation-triangle"></i>
+    <strong>Warning!</strong> You are about to delete this supplier rate. This action cannot be undone.
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5 class="card-title mb-0">Supplier Rate to be Deleted</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Supplier</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.SupplierName)</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Rate)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.Rate)</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RateStartDate)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.RateStartDate)</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RateEndDate)</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.RateEndDate.HasValue)
+                        {
+                            @Html.DisplayFor(model => model.RateEndDate)
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Ongoing</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedByUser)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedByUser)</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedOn)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedOn)</dd>
+                </dl>
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="SupplierRateId" />
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-secondary me-md-2" asp-action="Index">Cancel</a>
+                        <button type="submit" class="btn btn-danger">Delete Rate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Rate Status</h5>
+            </div>
+            <div class="card-body">
+                @if (!Model.RateEndDate.HasValue || Model.RateEndDate.Value > DateTime.Now)
+                {
+                    <div class="alert alert-info" role="alert">
+                        <i class="fas fa-info-circle"></i>
+                        This is currently an <strong>active rate</strong>. Deleting it may affect current operations.
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-secondary" role="alert">
+                        <i class="fas fa-check-circle"></i>
+                        This rate is <strong>inactive</strong> and can be safely deleted.
+                    </div>
+                }
+                
+                <div class="mt-3">
+                    <a asp-controller="Supplier" asp-action="Details" asp-route-id="@Model.SupplierId" class="btn btn-outline-info w-100">
+                        <i class="fas fa-building"></i> View Supplier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

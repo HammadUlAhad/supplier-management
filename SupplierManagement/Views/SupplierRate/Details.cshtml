@@ -1,0 +1,120 @@
+@model SupplierManagement.Models.ViewModels.SupplierRateViewModel
+
+@{
+    ViewData["Title"] = "Supplier Rate Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Supplier Rate Details</h1>
+    <div>
+        <a class="btn btn-primary me-2" asp-action="Edit" asp-route-id="@Model.SupplierRateId">Edit</a>
+        <a class="btn btn-secondary" asp-action="Index">Back to List</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Rate Information</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Supplier</dt>
+                    <dd class="col-sm-9">
+                        <a asp-controller="Supplier" asp-action="Details" asp-route-id="@Model.SupplierId" class="text-decoration-none">
+                            <strong>@Html.DisplayFor(model => model.SupplierName)</strong>
+                        </a>
+                    </dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Rate)</dt>
+                    <dd class="col-sm-9">
+                        <span class="h4 text-success">@Html.DisplayFor(model => model.Rate)</span>
+                    </dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RateStartDate)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.RateStartDate)</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.RateEndDate)</dt>
+                    <dd class="col-sm-9">
+                        @if (Model.RateEndDate.HasValue)
+                        {
+                            @Html.DisplayFor(model => model.RateEndDate)
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Ongoing / Current</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">Status</dt>
+                    <dd class="col-sm-9">
+                        @if (!Model.RateEndDate.HasValue || Model.RateEndDate.Value > DateTime.Now)
+                        {
+                            <span class="badge bg-success fs-6">Active</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary fs-6">Inactive</span>
+                        }
+                    </dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedByUser)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedByUser)</dd>
+
+                    <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CreatedOn)</dt>
+                    <dd class="col-sm-9">@Html.DisplayFor(model => model.CreatedOn)</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.SupplierRateId" class="btn btn-primary">
+                        <i class="fas fa-edit"></i> Edit This Rate
+                    </a>
+                    <a asp-controller="Supplier" asp-action="Details" asp-route-id="@Model.SupplierId" class="btn btn-info">
+                        <i class="fas fa-building"></i> View Supplier Details
+                    </a>
+                    <a asp-action="BySupplier" asp-route-id="@Model.SupplierId" class="btn btn-outline-info">
+                        <i class="fas fa-list"></i> All Rates for This Supplier
+                    </a>
+                    <a asp-action="Create" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Add New Rate
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.RateEndDate.HasValue && Model.RateEndDate.Value <= DateTime.Now)
+        {
+            <div class="card mt-3">
+                <div class="card-header bg-warning">
+                    <h5 class="card-title mb-0">Rate Status</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">This rate has expired on @Model.RateEndDate.Value.ToString("dd/MM/yyyy").</p>
+                    <a asp-action="Create" asp-route-supplierId="@Model.SupplierId" class="btn btn-warning">
+                        <i class="fas fa-plus"></i> Add New Rate for This Supplier
+                    </a>
+                </div>
+            </div>
+        }
+        else if (!Model.RateEndDate.HasValue)
+        {
+            <div class="card mt-3">
+                <div class="card-header bg-success">
+                    <h5 class="card-title mb-0">Current Rate</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">This is the current active rate for the supplier.</p>
+                </div>
+            </div>
+        }
+    </div>
+</div>

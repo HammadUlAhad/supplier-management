@@ -1,8 +1,82 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Supplier Management System";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4">Supplier Management System</h1>
+    <p class="lead">Manage your suppliers and their rates efficiently</p>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h4 class="card-title">Suppliers</h4>
+                <p class="card-text">Manage your supplier information, including names, addresses, and contact details.</p>
+                <div class="d-grid gap-2">
+                    <a asp-controller="Supplier" asp-action="Index" class="btn btn-primary">
+                        View All Suppliers
+                    </a>
+                    <a asp-controller="Supplier" asp-action="Create" class="btn btn-outline-primary">
+                        Add New Supplier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <h4 class="card-title">Supplier Rates</h4>
+                <p class="card-text">Track and manage pricing rates for each supplier over time periods.</p>
+                <div class="d-grid gap-2">
+                    <a asp-controller="SupplierRate" asp-action="Index" class="btn btn-success">
+                        View All Rates
+                    </a>
+                    <a asp-controller="SupplierRate" asp-action="Create" class="btn btn-outline-success">
+                        Add New Rate
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">System Features</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6>Data Management</h6>
+                        <ul class="list-unstyled">
+                            <li>CRUD operations for suppliers</li>
+                            <li>CRUD operations for supplier rates</li>
+                            <li>SQL Server database integration</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Security & Validation</h6>
+                        <ul class="list-unstyled">
+                            <li>Input validation</li>
+                            <li>Anti-forgery tokens</li>
+                            <li>Error handling</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6>Architecture</h6>
+                        <ul class="list-unstyled">
+                            <li>Layered architecture</li>
+                            <li>Repository pattern</li>
+                            <li>Service layer</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

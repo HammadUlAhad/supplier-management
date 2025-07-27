@@ -1,0 +1,93 @@
+@model SupplierManagement.Models.ViewModels.SupplierViewModel
+
+@{
+    ViewData["Title"] = "Delete Supplier";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="alert alert-warning" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-exclamation-triangle fa-2x me-3"></i>
+                <div>
+                    <h5 class="alert-heading">Confirm Deletion</h5>
+                    <p class="mb-0">You are about to permanently delete this supplier. This action cannot be undone.</p>
+                    @if (Model.SupplierRates.Any())
+                    {
+                        <hr>
+                        <p class="mb-0"><strong>Warning:</strong> This will also delete all associated supplier rates (@Model.SupplierRates.Count() rates).</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow">
+            <div class="card-header bg-danger text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-trash"></i> Delete Supplier
+                    </h4>
+                    <a class="btn btn-light btn-sm" asp-action="Index">Back</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="text-danger mb-3">Supplier to be Deleted</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Name)</dt>
+                            <dd class="col-sm-8"><strong>@Html.DisplayFor(model => model.Name)</strong></dd>
+
+                            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.Address)</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.Address)</dd>
+
+                            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CreatedByUser)</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.CreatedByUser)</dd>
+
+                            <dt class="col-sm-4">@Html.DisplayNameFor(model => model.CreatedOn)</dt>
+                            <dd class="col-sm-8">@Html.DisplayFor(model => model.CreatedOn)</dd>
+                        </dl>
+                    </div>
+                    
+                    @if (Model.SupplierRates.Any())
+                    {
+                        <div class="col-md-4">
+                            <h6 class="text-warning">Associated Rates</h6>
+                            <div class="list-group">
+                                @foreach (var rate in Model.SupplierRates.OrderByDescending(r => r.RateStartDate).Take(3))
+                                {
+                                    <div class="list-group-item list-group-item-warning">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h6 class="mb-1">@rate.Rate</h6>
+                                            <small>@rate.RateStartDate.ToString("dd/MM/yyyy")</small>
+                                        </div>
+                                        @if (rate.RateEndDate.HasValue)
+                                        {
+                                            <small>Until @rate.RateEndDate.Value.ToString("dd/MM/yyyy")</small>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Current</span>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            @if (Model.SupplierRates.Count() > 3)
+                            {
+                                <p class="text-muted mt-2 small">... and @(Model.SupplierRates.Count() - 3) more rates</p>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <form asp-action="Delete" class="mt-4">
+                    <input type="hidden" asp-for="SupplierId" />
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end pt-3 border-top">
+                        <a class="btn btn-outline-secondary me-md-2" asp-action="Index">Cancel</a>
+                        <button type="submit" class="btn btn-danger">Delete Supplier</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
