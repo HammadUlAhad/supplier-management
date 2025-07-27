@@ -17,13 +17,28 @@ namespace SupplierManagement.Repositories.Implementations
         public async Task<IEnumerable<Supplier>> GetAllAsync()
         {
             return await _context.Suppliers
-                .Include(s => s.SupplierRates)
-                .OrderBy(s => s.Name)
                 .AsNoTracking()
+                .OrderBy(s => s.Name)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Supplier>> GetAllWithRatesAsync()
+        {
+            return await _context.Suppliers
+                .Include(s => s.SupplierRates.OrderBy(sr => sr.RateStartDate))
+                .AsNoTracking()
+                .OrderBy(s => s.Name)
                 .ToListAsync();
         }
 
         public async Task<Supplier?> GetByIdAsync(int id)
+        {
+            return await _context.Suppliers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(s => s.SupplierId == id);
+        }
+
+        public async Task<Supplier?> GetByIdWithRatesAsync(int id)
         {
             return await _context.Suppliers
                 .Include(s => s.SupplierRates.OrderBy(sr => sr.RateStartDate))
@@ -33,7 +48,7 @@ namespace SupplierManagement.Repositories.Implementations
 
         public async Task<Supplier> AddAsync(Supplier supplier)
         {
-            await _context.Suppliers.AddAsync(supplier);
+            _context.Suppliers.Add(supplier);
             await _context.SaveChangesAsync();
             return supplier;
         }
@@ -42,12 +57,11 @@ namespace SupplierManagement.Repositories.Implementations
         {
             var existingSupplier = await _context.Suppliers.FindAsync(supplier.SupplierId);
             if (existingSupplier == null)
+            {
                 return null;
+            }
 
-            existingSupplier.Name = supplier.Name;
-            existingSupplier.Address = supplier.Address;
-            existingSupplier.CreatedByUser = supplier.CreatedByUser;
-
+            _context.Entry(existingSupplier).CurrentValues.SetValues(supplier);
             await _context.SaveChangesAsync();
             return existingSupplier;
         }
@@ -56,7 +70,9 @@ namespace SupplierManagement.Repositories.Implementations
         {
             var supplier = await _context.Suppliers.FindAsync(id);
             if (supplier == null)
+            {
                 return false;
+            }
 
             _context.Suppliers.Remove(supplier);
             await _context.SaveChangesAsync();
@@ -66,15 +82,6 @@ namespace SupplierManagement.Repositories.Implementations
         public async Task<bool> ExistsAsync(int id)
         {
             return await _context.Suppliers.AnyAsync(s => s.SupplierId == id);
-        }
-
-        public async Task<IEnumerable<Supplier>> GetAllWithRatesAsync()
-        {
-            return await _context.Suppliers
-                .Include(s => s.SupplierRates.OrderBy(sr => sr.RateStartDate))
-                .OrderBy(s => s.Name)
-                .AsNoTracking()
-                .ToListAsync();
         }
     }
 }

@@ -97,8 +97,8 @@ namespace SupplierManagement.Services.Implementations
                             SupplierRateId = overlap.Rate1Id,
                             SupplierId = overlap.SupplierId,
                             Rate = overlap.Rate1Value,
-                            RateStartDate = overlap.Rate1Start,
-                            RateEndDate = overlap.Rate1End,
+                            RateStartDate = overlap.Rate1StartDate,
+                            RateEndDate = overlap.Rate1EndDate,
                             CreatedOn = DateTime.UtcNow, // Default value
                             CreatedByUser = "system", // Default value
                             SupplierName = overlap.SupplierName
@@ -108,15 +108,15 @@ namespace SupplierManagement.Services.Implementations
                             SupplierRateId = overlap.Rate2Id,
                             SupplierId = overlap.SupplierId,
                             Rate = overlap.Rate2Value,
-                            RateStartDate = overlap.Rate2Start,
-                            RateEndDate = overlap.Rate2End,
+                            RateStartDate = overlap.Rate2StartDate,
+                            RateEndDate = overlap.Rate2EndDate,
                             CreatedOn = DateTime.UtcNow, // Default value
                             CreatedByUser = "system", // Default value
                             SupplierName = overlap.SupplierName
                         },
-                        OverlapStartDate = overlap.OverlapStart,
-                        OverlapEndDate = overlap.OverlapEnd,
-                        OverlapDays = (int)(overlap.OverlapEnd - overlap.OverlapStart).TotalDays + 1
+                        OverlapStartDate = overlap.OverlapStartDate,
+                        OverlapEndDate = overlap.OverlapEndDate,
+                        OverlapDays = (int)(overlap.OverlapEndDate - overlap.OverlapStartDate).TotalDays + 1
                     });
                 }
 

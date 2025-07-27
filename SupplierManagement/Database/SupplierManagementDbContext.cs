@@ -156,6 +156,37 @@ namespace SupplierManagement.Database
                     RateEndDate = null,
                     CreatedByUser = "admin.user",
                     CreatedOn = new DateTime(2021, 7, 30, 0, 0, 0, DateTimeKind.Utc)
+                },
+                // Add overlapping rates for testing Exercise 2
+                new SupplierRate
+                {
+                    SupplierRateId = 8,
+                    SupplierId = 1,
+                    Rate = 15m,
+                    RateStartDate = new DateTime(2015, 2, 15), // Overlaps with rate ID 1 (2015-01-01 to 2015-03-31)
+                    RateEndDate = new DateTime(2015, 4, 15),   // Overlaps with rate ID 2 (2015-04-01 to 2015-05-01)
+                    CreatedByUser = "admin.user",
+                    CreatedOn = new DateTime(2021, 7, 30, 0, 0, 0, DateTimeKind.Utc)
+                },
+                new SupplierRate
+                {
+                    SupplierRateId = 9,
+                    SupplierId = 2,
+                    Rate = 90m,
+                    RateStartDate = new DateTime(2016, 10, 15), // Overlaps with rate ID 5 (2016-11-01 to null)
+                    RateEndDate = new DateTime(2017, 2, 1),
+                    CreatedByUser = "admin.user",
+                    CreatedOn = new DateTime(2021, 7, 30, 0, 0, 0, DateTimeKind.Utc)
+                },
+                new SupplierRate
+                {
+                    SupplierRateId = 10,
+                    SupplierId = 3,
+                    Rate = 25m,
+                    RateStartDate = new DateTime(2016, 12, 15), // Overlaps with rate ID 6 (2016-12-01 to 2017-01-01)
+                    RateEndDate = new DateTime(2017, 1, 15),    // Overlaps with rate ID 7 (2017-01-02 to null)
+                    CreatedByUser = "admin.user",
+                    CreatedOn = new DateTime(2021, 7, 30, 0, 0, 0, DateTimeKind.Utc)
                 }
             );
         }

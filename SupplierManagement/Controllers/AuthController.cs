@@ -11,7 +11,7 @@ namespace SupplierManagement.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    [Route("api/v1/[controller]")] // Added v1 route support
+    [Route("api/v1/[controller]")]
     [Produces("application/json")]
     [EnableRateLimiting("AuthPolicy")]
     public class AuthController : ControllerBase

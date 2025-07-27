@@ -9,26 +9,22 @@ namespace SupplierManagement.Mappings
     {
         public AutoMapperProfile()
         {
-            // Supplier mappings
-            CreateMap<Supplier, SupplierViewModel>()
-                .ForMember(dest => dest.SupplierRates, opt => opt.MapFrom(src => src.SupplierRates));
-            
-            CreateMap<SupplierViewModel, Supplier>()
-                .ForMember(dest => dest.SupplierRates, opt => opt.Ignore());
+            // Domain to ViewModel mappings
+            CreateMap<Supplier, SupplierViewModel>().ReverseMap();
+            CreateMap<SupplierRate, SupplierRateViewModel>().ReverseMap();
 
-            // SupplierRate mappings
-            CreateMap<SupplierRate, SupplierRateViewModel>()
-                .ForMember(dest => dest.SupplierName, opt => opt.MapFrom(src => src.Supplier.Name));
-            
-            CreateMap<SupplierRateViewModel, SupplierRate>()
-                .ForMember(dest => dest.Supplier, opt => opt.Ignore());
-
-            // API DTO mappings for Exercise 2
+            // Domain to API DTO mappings
             CreateMap<Supplier, SupplierApiDto>()
                 .ForMember(dest => dest.Rates, opt => opt.MapFrom(src => src.SupplierRates));
             
             CreateMap<SupplierRate, SupplierRateApiDto>()
                 .ForMember(dest => dest.SupplierName, opt => opt.MapFrom(src => src.Supplier != null ? src.Supplier.Name : string.Empty));
+
+            // ViewModel to API DTO mappings (if needed)
+            CreateMap<SupplierViewModel, SupplierApiDto>()
+                .ForMember(dest => dest.Rates, opt => opt.MapFrom(src => src.SupplierRates));
+            
+            CreateMap<SupplierRateViewModel, SupplierRateApiDto>();
         }
     }
 }

@@ -1,5 +1,4 @@
 using SupplierManagement.Models.Domain;
-using SupplierManagement.Repositories.Implementations;
 
 namespace SupplierManagement.Repositories.Interfaces
 {
@@ -13,11 +12,24 @@ namespace SupplierManagement.Repositories.Interfaces
         Task<bool> DeleteAsync(int id);
         Task<bool> ExistsAsync(int id);
         
-        // API methods for Exercise 2
-        Task<IEnumerable<SupplierRate>> GetAllWithSupplierInfoAsync();
-        Task<IEnumerable<SupplierRate>> GetBySupplierIdWithInfoAsync(int supplierId);
-        
-        // High-performance overlap detection
+        // High-performance overlap detection method
         Task<IEnumerable<OverlapResult>> GetOverlappingRatesAsync(int? supplierId = null);
+    }
+
+    // DTO for overlap query results
+    public class OverlapResult
+    {
+        public int SupplierId { get; set; }
+        public string SupplierName { get; set; } = string.Empty;
+        public int Rate1Id { get; set; }
+        public decimal Rate1Value { get; set; }
+        public DateTime Rate1StartDate { get; set; }
+        public DateTime? Rate1EndDate { get; set; }
+        public int Rate2Id { get; set; }
+        public decimal Rate2Value { get; set; }
+        public DateTime Rate2StartDate { get; set; }
+        public DateTime? Rate2EndDate { get; set; }
+        public DateTime OverlapStartDate { get; set; }
+        public DateTime OverlapEndDate { get; set; }
     }
 }

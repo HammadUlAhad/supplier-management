@@ -30,17 +30,39 @@ namespace SupplierManagement.Middleware
         private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             var response = new
             {
                 message = "An error occurred while processing your request.",
-                details = context.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment() 
-                    ? exception.Message 
-                    : "Please try again later."
+                details = exception.Message
             };
 
-            var jsonResponse = JsonSerializer.Serialize(response);
+            // Set status code based on exception type
+            context.Response.StatusCode = exception switch
+            {
+                ArgumentException => (int)HttpStatusCode.BadRequest,
+                KeyNotFoundException => (int)HttpStatusCode.NotFound,
+                UnauthorizedAccessException => (int)HttpStatusCode.Unauthorized,
+                NotImplementedException => (int)HttpStatusCode.NotImplemented,
+                TimeoutException => (int)HttpStatusCode.RequestTimeout,
+                _ => (int)HttpStatusCode.InternalServerError
+            };
+
+            // Don't expose internal details in production
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+            {
+                response = new
+                {
+                    message = "An error occurred while processing your request.",
+                    details = "Please contact support if the problem persists."
+                };
+            }
+
+            var jsonResponse = JsonSerializer.Serialize(response, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
+
             await context.Response.WriteAsync(jsonResponse);
         }
     }
