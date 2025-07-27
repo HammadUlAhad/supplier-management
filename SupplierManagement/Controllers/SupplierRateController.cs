@@ -56,7 +56,10 @@ namespace SupplierManagement.Controllers
         public async Task<IActionResult> Create()
         {
             await PopulateSupplierDropdown();
-            return View(new SupplierRateViewModel());
+            return View(new SupplierRateViewModel 
+            { 
+                RateStartDate = DateTime.Today 
+            });
         }
 
         // POST: SupplierRate/Create
