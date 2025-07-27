@@ -9,6 +9,13 @@
 ### 1. Get Authentication Token
 
 ```bash
+curl -X POST "http://localhost:5114/api/v1/auth/token" \
+     -H "Content-Type: application/json" \
+     -d '{"username": "admin", "password": "password123"}'
+```
+
+Alternative endpoint (both work):
+```bash
 curl -X POST "http://localhost:5114/api/auth/login" \
      -H "Content-Type: application/json" \
      -d '{"username": "admin", "password": "password123"}'
@@ -25,35 +32,40 @@ Expected Response:
 ### 2. Test Suppliers with Rates API
 
 ```bash
-curl -X GET "http://localhost:5114/api/suppliers/with-rates" \
+curl -X GET "http://localhost:5114/api/v1/suppliers" \
      -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ### 3. Test Overlapping Rates API (All Suppliers)
 
 ```bash
-curl -X GET "http://localhost:5114/api/suppliers/overlapping-rates" \
+curl -X GET "http://localhost:5114/api/v1/suppliers/overlaps" \
      -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ### 4. Test Overlapping Rates API (Specific Supplier)
 
 ```bash
-curl -X GET "http://localhost:5114/api/suppliers/overlapping-rates?supplierId=1" \
+curl -X GET "http://localhost:5114/api/v1/suppliers/overlaps?supplierId=1" \
      -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
 ### 5. Get Demo Credentials
 
 ```bash
-curl -X GET "http://localhost:5114/api/auth/test-credentials"
+curl -X GET "http://localhost:5114/api/v1/auth/demo-credentials"
+```
+
+Alternative endpoint (both work):
+```bash
+curl -X GET "http://localhost:5114/api/auth/demo-credentials"
 ```
 
 ## PowerShell Testing Examples
 
 ### Get Token
 ```powershell
-$response = Invoke-RestMethod -Uri "http://localhost:5114/api/auth/login" `
+$response = Invoke-RestMethod -Uri "http://localhost:5114/api/v1/auth/token" `
     -Method POST `
     -ContentType "application/json" `
     -Body '{"username": "admin", "password": "password123"}'
@@ -66,11 +78,11 @@ $token = $response.token
 $headers = @{ Authorization = "Bearer $token" }
 
 # Get all suppliers with rates
-$suppliers = Invoke-RestMethod -Uri "http://localhost:5114/api/suppliers/with-rates" `
+$suppliers = Invoke-RestMethod -Uri "http://localhost:5114/api/v1/suppliers" `
     -Headers $headers
 
 # Get overlapping rates
-$overlaps = Invoke-RestMethod -Uri "http://localhost:5114/api/suppliers/overlapping-rates" `
+$overlaps = Invoke-RestMethod -Uri "http://localhost:5114/api/v1/suppliers/overlaps" `
     -Headers $headers
 ```
 
@@ -82,9 +94,9 @@ $overlaps = Invoke-RestMethod -Uri "http://localhost:5114/api/suppliers/overlapp
   {
     "supplierId": 1,
     "name": "BestValue Suppliers",
-    "address": "123 Business Ave, Commerce City",
-    "createdOn": "2025-01-15T10:30:00Z",
-    "createdByUser": "system",
+    "address": "1, Main Street, The District, City1, XXX-AADA",
+    "createdOn": "2021-07-30T00:00:00Z",
+    "createdByUser": "admin.user",
     "rates": [
       {
         "supplierRateId": 1,
@@ -92,8 +104,9 @@ $overlaps = Invoke-RestMethod -Uri "http://localhost:5114/api/suppliers/overlapp
         "rate": 25.50,
         "rateStartDate": "2025-01-01T00:00:00Z",
         "rateEndDate": "2025-06-30T00:00:00Z",
-        "createdOn": "2025-01-15T10:30:00Z",
-        "createdByUser": "system"
+        "createdOn": "2021-07-30T00:00:00Z",
+        "createdByUser": "admin.user",
+        "supplierName": null
       }
     ]
   }
@@ -113,14 +126,20 @@ $overlaps = Invoke-RestMethod -Uri "http://localhost:5114/api/suppliers/overlapp
           "supplierId": 1,
           "rate": 25.50,
           "rateStartDate": "2025-01-01T00:00:00Z",
-          "rateEndDate": "2025-06-30T00:00:00Z"
+          "rateEndDate": "2025-06-30T00:00:00Z",
+          "createdOn": "2021-07-30T00:00:00Z",
+          "createdByUser": "admin.user",
+          "supplierName": "BestValue Suppliers"
         },
         "rate2": {
           "supplierRateId": 2,
           "supplierId": 1,
           "rate": 28.00,
           "rateStartDate": "2025-06-01T00:00:00Z",
-          "rateEndDate": null
+          "rateEndDate": null,
+          "createdOn": "2021-07-30T00:00:00Z",
+          "createdByUser": "admin.user",
+          "supplierName": "BestValue Suppliers"
         },
         "overlapStartDate": "2025-06-01T00:00:00Z",
         "overlapEndDate": "2025-06-30T00:00:00Z",

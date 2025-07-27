@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using SupplierManagement.Models.Api;
 using SupplierManagement.Services.Interfaces;
-using SupplierManagement.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace SupplierManagement.Controllers

@@ -94,21 +94,6 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey)),
         ClockSkew = TimeSpan.Zero
     };
-    
-    // For development debugging
-    options.Events = new JwtBearerEvents
-    {
-        OnAuthenticationFailed = context =>
-        {
-            Console.WriteLine($"JWT Authentication failed: {context.Exception.Message}");
-            return Task.CompletedTask;
-        },
-        OnTokenValidated = context =>
-        {
-            Console.WriteLine("JWT Token validated successfully");
-            return Task.CompletedTask;
-        }
-    };
 });
 
 builder.Services.AddAuthorization();
@@ -159,7 +144,6 @@ builder.Services.AddLogging();
 // Configure structured logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-builder.Logging.AddDebug();
 
 if (builder.Environment.IsProduction() && OperatingSystem.IsWindows())
 {

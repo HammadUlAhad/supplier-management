@@ -15,14 +15,20 @@ The application follows industry best practices with a layered architecture:
 ```
 ├── Controllers/          # MVC Controllers (Presentation Layer)
 ├── Services/             # Business Logic Layer
+│   ├── Interfaces/      # Service Contracts
+│   └── Implementations/ # Service Implementations
 ├── Repositories/         # Data Access Layer
+│   ├── Interfaces/      # Repository Contracts
+│   └── Implementations/ # Repository Implementations
 ├── Models/
 │   ├── Domain/          # Entity Models
-│   └── ViewModels/      # UI Models
+│   ├── ViewModels/      # UI Models
+│   └── Api/             # API DTOs
 ├── Database/            # Entity Framework DbContext
 ├── Views/               # Razor Views
 ├── Middleware/          # Custom Middleware
-└── Mappings/            # AutoMapper Profiles
+├── Mappings/            # AutoMapper Profiles
+└── Migrations/          # Entity Framework Migrations
 ```
 
 ## 🛠️ Technology Stack
@@ -392,28 +398,36 @@ The application includes seed data with:
 - 7 sample rates with various date ranges
 - Demonstrates active and inactive rates
 
-## 📝 API Endpoints
+## 📝 MVC Web Interface
 
-### Suppliers
-- `GET /Supplier` - List all suppliers
-- `GET /Supplier/Details/{id}` - View supplier details
-- `GET /Supplier/Create` - Create supplier form
-- `POST /Supplier/Create` - Submit new supplier
-- `GET /Supplier/Edit/{id}` - Edit supplier form
-- `POST /Supplier/Edit/{id}` - Update supplier
-- `GET /Supplier/Delete/{id}` - Delete confirmation
-- `POST /Supplier/Delete/{id}` - Confirm deletion
+The application provides a complete web interface for managing suppliers and rates through the following pages:
 
-### Supplier Rates
-- `GET /SupplierRate` - List all rates
-- `GET /SupplierRate/Details/{id}` - View rate details
-- `GET /SupplierRate/Create` - Create rate form
-- `POST /SupplierRate/Create` - Submit new rate
-- `GET /SupplierRate/Edit/{id}` - Edit rate form
-- `POST /SupplierRate/Edit/{id}` - Update rate
-- `GET /SupplierRate/Delete/{id}` - Delete confirmation
-- `POST /SupplierRate/Delete/{id}` - Confirm deletion
-- `GET /SupplierRate/BySupplier/{id}` - Rates for specific supplier
+### Home
+- `GET /` - Application home page with navigation links
+
+### Supplier Management
+- `GET /Supplier` - List all suppliers with search and filtering
+- `GET /Supplier/Details/{id}` - View detailed supplier information
+- `GET /Supplier/Create` - Display create supplier form
+- `POST /Supplier/Create` - Submit new supplier data
+- `GET /Supplier/Edit/{id}` - Display edit supplier form
+- `POST /Supplier/Edit/{id}` - Update existing supplier
+- `GET /Supplier/Delete/{id}` - Display delete confirmation
+- `POST /Supplier/Delete/{id}` - Confirm supplier deletion
+
+### Supplier Rate Management
+- `GET /SupplierRate` - List all rates with supplier information
+- `GET /SupplierRate/Details/{id}` - View detailed rate information
+- `GET /SupplierRate/Create` - Display create rate form
+- `POST /SupplierRate/Create` - Submit new rate data
+- `GET /SupplierRate/Edit/{id}` - Display edit rate form
+- `POST /SupplierRate/Edit/{id}` - Update existing rate
+- `GET /SupplierRate/Delete/{id}` - Display delete confirmation
+- `POST /SupplierRate/Delete/{id}` - Confirm rate deletion
+- `GET /SupplierRate/BySupplier/{id}` - View all rates for a specific supplier
+
+### Error Handling
+- `GET /Home/Error` - Application error page with details
 
 ## 🔍 Development
 
@@ -454,37 +468,90 @@ dotnet publish -c Release -o ./publish
 ```
 SupplierManagement/
 ├── Controllers/
-│   ├── HomeController.cs
-│   ├── SupplierController.cs
-│   └── SupplierRateController.cs
+│   ├── AuthController.cs             # JWT Authentication API
+│   ├── HomeController.cs             # MVC Home Controller
+│   ├── SupplierApiController.cs      # Exercise 2 REST API
+│   ├── SupplierController.cs         # MVC Supplier CRUD
+│   └── SupplierRateController.cs     # MVC Rate CRUD
 ├── Database/
-│   └── SupplierManagementDbContext.cs
+│   └── SupplierManagementDbContext.cs # EF Core DbContext
 ├── Mappings/
-│   └── AutoMapperProfile.cs
+│   └── AutoMapperProfile.cs          # Object Mapping Configuration
 ├── Middleware/
-│   └── GlobalExceptionMiddleware.cs
+│   └── GlobalExceptionMiddleware.cs  # Global Error Handling
+├── Migrations/                       # Entity Framework Migrations
+│   ├── 20250727121125_InitialCreate.cs
+│   ├── 20250727125737_UpdateDateColumns.cs
+│   ├── 20250727163354_AddOverlappingTestData.cs
+│   └── SupplierManagementDbContextModelSnapshot.cs
 ├── Models/
-│   ├── Domain/
-│   │   ├── Supplier.cs
-│   │   └── SupplierRate.cs
-│   ├── ViewModels/
-│   │   ├── SupplierViewModel.cs
-│   │   └── SupplierRateViewModel.cs
-│   └── ErrorViewModel.cs
-├── Repositories/
+│   ├── Api/                         # API Data Transfer Objects
+│   │   ├── AuthDto.cs               # Authentication DTOs
+│   │   ├── OverlappingRateDto.cs    # Overlap Detection DTOs
+│   │   ├── SupplierApiDto.cs        # Supplier API DTOs
+│   │   └── SupplierRateApiDto.cs    # Rate API DTOs
+│   ├── Domain/                      # Entity Models
+│   │   ├── Supplier.cs              # Supplier Entity
+│   │   └── SupplierRate.cs          # Rate Entity
+│   ├── ViewModels/                  # UI Models
+│   │   ├── SupplierViewModel.cs     # Supplier View Model
+│   │   └── SupplierRateViewModel.cs # Rate View Model
+│   └── ErrorViewModel.cs            # Error Handling Model
+├── Repositories/                    # Data Access Layer
 │   ├── Interfaces/
+│   │   ├── ISupplierRepository.cs   # Supplier Repository Contract
+│   │   └── ISupplierRateRepository.cs # Rate Repository Contract
 │   └── Implementations/
-├── Services/
+│       ├── SupplierRepository.cs    # Supplier Data Access
+│       └── SupplierRateRepository.cs # Rate Data Access
+├── Services/                        # Business Logic Layer
 │   ├── Interfaces/
+│   │   ├── ISupplierService.cs      # Supplier Service Contract
+│   │   ├── ISupplierRateService.cs  # Rate Service Contract
+│   │   └── ITokenService.cs         # Authentication Service Contract
 │   └── Implementations/
-├── Views/
+│       ├── SupplierService.cs       # Supplier Business Logic
+│       ├── SupplierRateService.cs   # Rate Business Logic
+│       └── TokenService.cs          # JWT Token Management
+├── Views/                           # Razor Views
 │   ├── Home/
-│   ├── Supplier/
-│   ├── SupplierRate/
-│   └── Shared/
-├── wwwroot/
-├── appsettings.json
-└── Program.cs
+│   │   └── Index.cshtml             # Home Page
+│   ├── Shared/
+│   │   ├── _Layout.cshtml           # Main Layout
+│   │   ├── _Layout.cshtml.css       # Layout Styles
+│   │   ├── _ValidationScriptsPartial.cshtml # Validation Scripts
+│   │   └── Error.cshtml             # Error Page
+│   ├── Supplier/                    # Supplier Views
+│   │   ├── Index.cshtml             # Supplier List
+│   │   ├── Create.cshtml            # Create Supplier
+│   │   ├── Edit.cshtml              # Edit Supplier
+│   │   ├── Details.cshtml           # Supplier Details
+│   │   └── Delete.cshtml            # Delete Confirmation
+│   └── SupplierRate/                # Rate Views
+│       ├── Index.cshtml             # Rate List
+│       ├── Create.cshtml            # Create Rate
+│       ├── Edit.cshtml              # Edit Rate
+│       ├── Details.cshtml           # Rate Details
+│       ├── Delete.cshtml            # Delete Confirmation
+│       └── BySupplier.cshtml        # Rates by Supplier
+├── wwwroot/                         # Static Files
+│   ├── css/
+│   │   └── site.css                 # Custom Styles
+│   ├── js/
+│   │   └── site.js                  # Custom JavaScript
+│   ├── lib/                         # Third-party Libraries
+│   │   ├── bootstrap/               # Bootstrap Framework
+│   │   ├── jquery/                  # jQuery Library
+│   │   ├── jquery-validation/       # jQuery Validation
+│   │   └── jquery-validation-unobtrusive/ # Unobtrusive Validation
+│   └── favicon.ico                  # Site Icon
+├── Properties/
+│   └── launchSettings.json          # Development Settings
+├── appsettings.json                 # Application Configuration
+├── appsettings.Development.json     # Development Configuration
+├── Program.cs                       # Application Entry Point
+├── SupplierManagement.csproj        # Project File
+└── SupplierManagement.sln           # Solution File
 ```
 
 ## 🏗️ Scaling Architecture for Millions of Records
@@ -738,10 +805,38 @@ spec:
 
 This architectural approach ensures the system can handle millions of suppliers and rates while maintaining high availability and performance.
 
+## 🧹 Code Quality & Cleanup
+
+The codebase has been optimized for production use with the following cleanup measures:
+
+### Removed Components
+- **ValidationAttributes.cs**: Unused custom validation attribute class
+- **Attributes Directory**: Empty directory after validation cleanup
+- **Debug Code**: Removed Console.WriteLine statements from JWT authentication
+- **Development Logging**: Removed AddDebug() logging configuration
+- **Unused Imports**: Cleaned up unnecessary using statements
+
+### Quality Assurance
+- ✅ **Zero Build Warnings**: Clean compilation without any warnings
+- ✅ **No Dead Code**: All files and classes are actively used
+- ✅ **Consistent Naming**: Following C# naming conventions
+- ✅ **Proper Structure**: Clear separation of concerns
+- ✅ **Production Ready**: Optimized for deployment
+
+The application successfully builds and runs without any compilation warnings or runtime issues.
+
 ## 👤 Author
 
 **Hammad Ul Ahad**
 - GitHub: [@HammadUlAhad](https://github.com/HammadUlAhad)
+- Repository: [supplier-management](https://github.com/HammadUlAhad/supplier-management)
+- Branch: `exercise-2` (Latest development branch with Exercise 2 APIs)
+
+## 📚 Related Documentation
+
+- **[Exercise 2 Implementation Guide](EXERCISE-2-README.md)** - Detailed API documentation and usage examples
+- **[Scalability Architecture](SCALABILITY-ARCHITECTURE.md)** - Enterprise scaling strategies and recommendations
+- **[API Testing Guide](API_Testing_Guide.md)** - Complete testing procedures and examples
 
 ## 🙏 Acknowledgments
 
