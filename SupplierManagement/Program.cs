@@ -138,6 +138,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // Add Memory Cache
 builder.Services.AddMemoryCache();
 
+// Add Response Caching
+builder.Services.AddResponseCaching();
+
 // Add Response Compression
 builder.Services.AddResponseCompression();
 
@@ -187,6 +190,9 @@ app.UseMiddleware<GlobalExceptionMiddleware>();
 
 // Add rate limiting
 app.UseRateLimiter();
+
+// Add response caching
+app.UseResponseCaching();
 
 // Add response compression
 app.UseResponseCompression();
