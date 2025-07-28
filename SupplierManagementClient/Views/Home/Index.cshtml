@@ -1,0 +1,267 @@
+﻿@using Microsoft.Extensions.Options
+@using SupplierManagementClient.Models
+@inject IOptions<ApiSettings> ApiSettings
+@inject IOptions<DemoCredentials> DemoCredentials
+
+@{
+    ViewData["Title"] = "Exercise 3: Supplier Management Client";
+}
+
+<!-- Exercise 3 Implementation Header -->
+<div class="container-fluid bg-primary text-white py-4 mb-4">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h1 class="display-5 mb-2">
+                    <i class="fas fa-code me-2"></i>
+                    Exercise 3: API Client Implementation
+                </h1>
+                <p class="lead mb-0">
+                    Demonstrating synchronous vs asynchronous API calls with industry best practices
+                </p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="badge bg-success fs-6">
+                    <i class="fas fa-check-circle me-1"></i>
+                    Production Ready
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Requirements Overview -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list-check me-2"></i>
+                        Exercise 3 Requirements
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    <strong>Separate Project:</strong> Independent client application
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    <strong>Client Scripting:</strong> JavaScript API consumption
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    <strong>Synchronous Call:</strong> Suppliers & Rates API
+                                </li>
+                                <li class="mb-2">
+                                    <i class="fas fa-check text-success me-2"></i>
+                                    <strong>Asynchronous Call:</strong> Overlapping Rates API
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Authentication Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-shield-halved me-2"></i>
+                        Authentication & Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <button id="btnAuthenticate" class="btn btn-warning btn-lg w-100">
+                                <i class="fas fa-key me-2"></i>
+                                Get JWT Token
+                            </button>
+                        </div>
+                        <div class="col-md-4">
+                            <div id="authStatus" class="alert alert-info mb-0">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Click "Get JWT Token" to authenticate
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="api-config-info">
+                                <small class="text-muted">
+                                    <strong>API Server:</strong> @ApiSettings.Value.BaseUrl<br>
+                                    <strong>Client Port:</strong> @Context.Request.Host<br>
+                                    <strong>Environment:</strong> @(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production")
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Call Sections -->
+    <div class="row mb-4">
+        <!-- Synchronous API Call -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100 border-success api-call-card" data-call-type="sync">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-sync me-2"></i>
+                        Synchronous API Call
+                    </h5>
+                    <small class="opacity-75">Blocks UI during execution</small>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <h6 class="text-success">
+                            <i class="fas fa-users me-2"></i>
+                            Get All Suppliers & Rates
+                        </h6>
+                        <p class="card-text small">
+                            Retrieves all suppliers with their associated rates using a 
+                            <span class="badge bg-success">synchronous</span> JavaScript call.
+                            The UI will freeze until the response is received.
+                        </p>
+                        <div class="api-details small text-muted">
+                            <i class="fas fa-link me-1"></i>
+                            <code>GET @ApiSettings.Value.SuppliersEndpoint</code>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <button id="btnGetSuppliers" class="btn btn-success btn-lg w-100 mb-3" disabled>
+                            <i class="fas fa-download me-2"></i>
+                            Get Suppliers (Sync)
+                        </button>
+                        <div id="syncStatus" class="text-center">
+                            <small class="text-muted">Authenticate first to enable this call</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Asynchronous API Call -->
+        <div class="col-lg-6 mb-4">
+            <div class="card h-100 border-primary api-call-card" data-call-type="async">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Asynchronous API Call
+                    </h5>
+                    <small class="opacity-75">Non-blocking execution</small>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <h6 class="text-primary">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Get Overlapping Rates
+                        </h6>
+                        <p class="card-text small">
+                            Identifies suppliers with overlapping rate periods using an 
+                            <span class="badge bg-primary">asynchronous</span> JavaScript call.
+                            The UI remains responsive during execution.
+                        </p>
+                        <div class="api-details small text-muted">
+                            <i class="fas fa-link me-1"></i>
+                            <code>GET @ApiSettings.Value.OverlapsEndpoint</code>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto">
+                        <button id="btnGetOverlaps" class="btn btn-primary btn-lg w-100 mb-3" disabled>
+                            <i class="fas fa-search me-2"></i>
+                            Get Overlaps (Async)
+                        </button>
+                        <div id="asyncStatus" class="text-center">
+                            <small class="text-muted">Authenticate first to enable this call</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading and Progress Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div id="loadingSection" class="text-center" style="display: none;">
+                <div class="card border-info">
+                    <div class="card-body">
+                        <div class="spinner-border text-primary mb-3" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <h5 id="loadingMessage">Processing API request...</h5>
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div id="loadingProgress" class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <small id="loadingDetails" class="text-muted">Establishing connection...</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card border-dark">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        API Response Data
+                        <span id="responseMetrics" class="badge bg-secondary ms-2" style="display: none;"></span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div id="apiResults" class="api-results-container">
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-database fa-3x mb-3 opacity-50"></i>
+                            <h5>No Data Available</h5>
+                            <p>API response data will appear here after making a successful call.</p>
+                            <small>Use the buttons above to fetch data from the Supplier Management API.</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden configuration for JavaScript -->
+<script type="application/json" id="app-config">
+{
+    "apiSettings": {
+        "baseUrl": "@ApiSettings.Value.BaseUrl",
+        "authEndpoint": "@ApiSettings.Value.AuthEndpoint",
+        "suppliersEndpoint": "@ApiSettings.Value.SuppliersEndpoint",
+        "overlapsEndpoint": "@ApiSettings.Value.OverlapsEndpoint",
+        "timeoutSeconds": @ApiSettings.Value.TimeoutSeconds,
+        "maxRetryAttempts": @ApiSettings.Value.MaxRetryAttempts
+    },
+    "credentials": {
+        "username": "@DemoCredentials.Value.Username",
+        "password": "@DemoCredentials.Value.Password"
+    },
+    "timestamp": "@DateTime.Now.Ticks"
+}
+</script>
+
+@section Scripts {
+    <!-- Exercise 3: Fresh Implementation - No Cache Issues -->
+    <script src="~/js/exercise3-final.js?v=@DateTime.Now.Ticks" type="text/javascript"></script>
+}

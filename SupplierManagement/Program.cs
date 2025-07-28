@@ -22,6 +22,22 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add CORS support for Exercise 3 client
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowExercise3Client", policy =>
+    {
+        policy.WithOrigins("https://localhost:7225", "http://localhost:7225",
+                          "https://localhost:7161", "http://localhost:5114",
+                          "http://localhost:5000", "https://localhost:5001", 
+                          "http://localhost:5115", "https://localhost:7298",
+                          "http://localhost:5105", "https://localhost:5105")  // Added client ports
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
 // Configure Rate Limiting for API Security
 builder.Services.AddRateLimiter(options =>
 {
@@ -172,6 +188,9 @@ else
 // Add global exception handling
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+// Add CORS support (must be before authentication)
+app.UseCors("AllowExercise3Client");
+
 // Add rate limiting
 app.UseRateLimiter();
 
@@ -202,7 +221,12 @@ app.Use(async (context, next) =>
     await next();
 });
 
-app.UseHttpsRedirection();
+// Only use HTTPS redirection for web pages, not API endpoints
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
