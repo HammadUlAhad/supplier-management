@@ -94,7 +94,7 @@ The application follows industry best practices with a layered architecture:
 
 ### Installation & Setup
 
-#### Option 1: Using Visual Studio 2022
+#### Option 1: Single Project (Basic Usage)
 
 1. **Clone the repository**
    ```bash
@@ -124,8 +124,48 @@ The application follows industry best practices with a layered architecture:
    - Or press `Ctrl+F5` to run without debugging
    - The application will open automatically in your default browser
 
-#### Option 2: Using Command Line (.NET CLI)
+#### Option 2: Dual Project Setup (Exercise 3 - API Testing with Client App)
 
+For testing the REST API with the separate client application (Exercise 3 requirements):
+
+1. **Clone the repository and set up database**
+   ```bash
+   git clone https://github.com/HammadUlAhad/supplier-management.git
+   cd supplier-management\SupplierManagement
+   dotnet ef database update
+   ```
+
+2. **Terminal 1: Start the API Server**
+   ```bash
+   cd supplier-management\SupplierManagement
+   dotnet run
+   ```
+   - API will run on: `https://localhost:7114` and `http://localhost:5114`
+   - Note the HTTPS port (usually 7114) for the client configuration
+
+3. **Terminal 2: Start the Client Application**
+   ```bash
+   cd supplier-management\SupplierManagementClient
+   dotnet run
+   ```
+   - Client will run on: `https://localhost:7105` and `http://localhost:5105`
+   - The client app will consume APIs from the server project
+
+4. **Test the Exercise 3 Implementation**
+   - Open browser to: `https://localhost:7105`
+   - Navigate to "Exercise 3 Demo" page
+   - Test synchronous and asynchronous API calls
+   - View overlapping supplier rates data
+
+**Important Notes for Dual Setup:**
+- ⚠️ **Run API Server First**: Always start the SupplierManagement project before the client
+- 🔧 **Port Configuration**: Client app expects API on port 7114 (configurable in appsettings.json)
+- 🔒 **CORS Enabled**: API server allows requests from localhost:7105
+- 🔑 **Authentication**: Client handles JWT token automatically for API calls
+
+#### Option 3: Using Command Line (.NET CLI)
+
+**Single Project Setup:**
 1. **Clone the repository**
    ```bash
    git clone https://github.com/HammadUlAhad/supplier-management.git
@@ -148,23 +188,48 @@ The application follows industry best practices with a layered architecture:
    ```
    This will create the database and apply all migrations with sample data.
 
-5. **Build the project**
+5. **Build and run the project**
    ```bash
    dotnet build
-   ```
-
-6. **Run the application**
-   ```bash
    dotnet run
    ```
 
-7. **Open your browser** and navigate to:
+6. **Open your browser** and navigate to:
    - **HTTPS**: `https://localhost:7xxx`
    - **HTTP**: `http://localhost:5xxx`
    
    (Port numbers will be displayed in the console)
 
-#### Option 3: Using VS Code
+**Dual Project Setup (API + Client for Exercise 3):**
+1. **Clone and setup database**
+   ```bash
+   git clone https://github.com/HammadUlAhad/supplier-management.git
+   cd supplier-management\SupplierManagement
+   dotnet restore
+   dotnet ef database update
+   ```
+
+2. **Terminal 1: Start API Server**
+   ```bash
+   # From supplier-management\SupplierManagement directory
+   dotnet run
+   # Note: API runs on https://localhost:7114
+   ```
+
+3. **Terminal 2: Start Client App**
+   ```bash
+   # Open new terminal
+   cd supplier-management\SupplierManagementClient
+   dotnet restore
+   dotnet run
+   # Note: Client runs on https://localhost:7105
+   ```
+
+4. **Access the applications**
+   - **API Server**: `https://localhost:7114` (with Swagger at `/swagger`)
+   - **Client App**: `https://localhost:7105` (Exercise 3 Demo page)
+
+#### Option 4: Using VS Code
 
 1. **Prerequisites for VS Code**
    - Install [C# Dev Kit extension](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit)
@@ -177,6 +242,7 @@ The application follows industry best practices with a layered architecture:
    code .
    ```
 
+**Single Project:**
 3. **Open integrated terminal** (`Ctrl+``) and run:
    ```bash
    cd SupplierManagement
@@ -184,6 +250,26 @@ The application follows industry best practices with a layered architecture:
    dotnet ef database update
    dotnet run
    ```
+
+**Dual Project Setup (for Exercise 3):**
+3. **Terminal 1 - API Server:**
+   ```bash
+   cd SupplierManagement
+   dotnet restore
+   dotnet ef database update
+   dotnet run
+   ```
+
+4. **Terminal 2 - Client App** (Ctrl+Shift+` for new terminal):
+   ```bash
+   cd SupplierManagementClient
+   dotnet restore
+   dotnet run
+   ```
+
+5. **Access both applications:**
+   - API Server: `https://localhost:7114` (Backend APIs)
+   - Client App: `https://localhost:7105` (Exercise 3 Frontend)
 
 ## 🔧 Configuration
 
@@ -367,6 +453,110 @@ When running in development mode, API documentation is available at:
 - **Swagger UI**: `https://localhost:7xxx/swagger`
 - **API Spec**: `https://localhost:7xxx/swagger/v1/swagger.json`
 
+## 🖥️ Exercise 3: Client Application Demo
+
+The Exercise 3 implementation demonstrates industry best practices for client-side API consumption using a separate ASP.NET Core MVC application.
+
+### Project Structure
+```
+SupplierManagementClient/          # Separate client application
+├── Controllers/
+│   └── HomeController.cs          # Exercise 3 demo controller
+├── Models/
+│   └── ErrorViewModel.cs          # Error handling
+├── Views/
+│   ├── Home/
+│   │   └── Index.cshtml           # Exercise 3 demo page
+│   └── Shared/
+│       └── _Layout.cshtml         # Clean layout
+├── wwwroot/
+│   └── js/
+│       └── exercise3-final.js     # Professional API client
+├── appsettings.json               # API endpoint configuration
+└── Program.cs                     # CORS and app configuration
+```
+
+### Key Features
+
+#### ✅ **Separate Project Architecture**
+- Independent ASP.NET Core MVC application
+- Clean separation from the API server
+- Professional project structure with proper dependency injection
+
+#### ✅ **Professional JavaScript Implementation**
+- **Synchronous API Calls**: Using XMLHttpRequest with blocking UI
+- **Asynchronous API Calls**: Using modern Fetch API with async/await
+- **Event-Driven Operations**: Button click handlers and form interactions
+- **Visible Data Display**: Real-time results with professional formatting
+
+#### ✅ **Industry Best Practices**
+- JWT authentication with automatic token management
+- Error handling with user-friendly messages
+- Loading indicators and progress feedback
+- Responsive Bootstrap 5 UI with color-coded sections
+- Configuration-driven API endpoints
+- CORS security implementation
+
+### Running Exercise 3
+
+1. **Start the API Server** (Terminal 1):
+   ```bash
+   cd SupplierManagement
+   dotnet run
+   # Runs on https://localhost:7114
+   ```
+
+2. **Start the Client App** (Terminal 2):
+   ```bash
+   cd SupplierManagementClient
+   dotnet run
+   # Runs on https://localhost:7105
+   ```
+
+3. **Access the Demo**:
+   - Navigate to: `https://localhost:7105`
+   - Click "Exercise 3 Demo" in the navigation
+   - Test authentication, sync calls, and async calls
+
+### Technical Implementation
+
+#### Synchronous API Call (Blocks UI)
+```javascript
+// XMLHttpRequest with async: false
+const xhr = new XMLHttpRequest();
+xhr.open('GET', url, false); // Synchronous call
+xhr.send();
+```
+
+#### Asynchronous API Call (Non-blocking)
+```javascript
+// Modern Fetch API with async/await
+const response = await fetch(url, {
+    headers: { 'Authorization': `Bearer ${token}` }
+});
+const data = await response.json();
+```
+
+#### Authentication Flow
+```javascript
+// JWT token management
+const authResponse = await fetch('/api/v1/auth/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credentials)
+});
+```
+
+### Exercise 3 Validation
+
+✅ **Separate Project**: SupplierManagementClient runs independently  
+✅ **Client Scripting**: Professional JavaScript with XMLHttpRequest and Fetch  
+✅ **Synchronous Calls**: UI blocks during synchronous operations  
+✅ **Asynchronous Calls**: Non-blocking async operations with await  
+✅ **Event-Triggered**: Button click handlers trigger API operations  
+✅ **Visible Data**: Professional display of suppliers and overlapping rates  
+✅ **Industry Practices**: JWT auth, error handling, responsive UI, CORS security
+
 ## 📱 Features
 
 ### Supplier Management
@@ -465,6 +655,7 @@ dotnet publish -c Release -o ./publish
 
 ## 📋 Project Structure
 
+### Main API Server (SupplierManagement)
 ```
 SupplierManagement/
 ├── Controllers/
@@ -552,6 +743,44 @@ SupplierManagement/
 ├── Program.cs                       # Application Entry Point
 ├── SupplierManagement.csproj        # Project File
 └── SupplierManagement.sln           # Solution File
+```
+
+### Client Application (SupplierManagementClient) - Exercise 3
+```
+SupplierManagementClient/
+├── Controllers/
+│   └── HomeController.cs            # Exercise 3 Demo Controller
+├── Models/
+│   └── ErrorViewModel.cs            # Error Handling Model
+├── Views/
+│   ├── Home/
+│   │   └── Index.cshtml             # Exercise 3 Demo Page
+│   ├── Shared/
+│   │   ├── _Layout.cshtml           # Clean Client Layout
+│   │   ├── _Layout.cshtml.css       # Layout Styles
+│   │   ├── _ValidationScriptsPartial.cshtml # Validation Scripts
+│   │   └── Error.cshtml             # Error Page
+│   ├── _ViewImports.cshtml          # View Imports
+│   └── _ViewStart.cshtml            # View Start
+├── wwwroot/                         # Static Files
+│   ├── css/
+│   │   └── site.css                 # Custom Client Styles
+│   ├── js/
+│   │   ├── exercise3-final.js       # Professional API Client
+│   │   └── site.js                  # Site JavaScript
+│   ├── lib/                         # Third-party Libraries
+│   │   ├── bootstrap/               # Bootstrap Framework
+│   │   ├── jquery/                  # jQuery Library
+│   │   ├── jquery-validation/       # jQuery Validation
+│   │   └── jquery-validation-unobtrusive/ # Unobtrusive Validation
+│   └── favicon.ico                  # Site Icon
+├── Properties/
+│   └── launchSettings.json          # Client Launch Settings
+├── appsettings.json                 # Client Configuration (API URLs)
+├── appsettings.Development.json     # Client Development Config
+├── Program.cs                       # Client Application Entry Point
+├── SupplierManagementClient.csproj  # Client Project File
+└── SupplierManagementClient.sln     # Client Solution File
 ```
 
 ## 🏗️ Scaling Architecture for Millions of Records
